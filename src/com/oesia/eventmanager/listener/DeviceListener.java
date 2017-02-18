@@ -3,6 +3,7 @@ package com.oesia.eventmanager.listener;
 import com.oesia.eventmanager.command.AlertCommand;
 import com.oesia.eventmanager.device.Device;
 import com.oesia.eventmanager.event.DeviceCommandEvent;
+import com.oesia.eventmanager.output.OutputChannel;
 
 public class DeviceListener
 {
@@ -13,6 +14,6 @@ public class DeviceListener
     
     public void alarmInDevice(Device device)
     {
-        System.out.println("ALARM " + device.getName() + "" + device.lastOnDuration());
+    	OutputChannel.displayMessage("ALARM " + device.getName() + " " + device.lastOnDuration());
     }
 }

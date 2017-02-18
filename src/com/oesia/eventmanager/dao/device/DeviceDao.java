@@ -5,4 +5,6 @@ import com.oesia.eventmanager.device.Device;
 public interface DeviceDao
 {
     public Device getDeviceByName(String deviceName);
+    
+    public boolean updateDevice(Device device);
 }

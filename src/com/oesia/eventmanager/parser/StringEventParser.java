@@ -1,46 +1,38 @@
 package com.oesia.eventmanager.parser;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.oesia.eventmanager.command.AlertCommand;
-import com.oesia.eventmanager.command.ICommand;
-import com.oesia.eventmanager.command.OffCommand;
-import com.oesia.eventmanager.command.OnCommand;
+import com.oesia.eventmanager.dao.DaoFactory;
+import com.oesia.eventmanager.dao.device.DeviceDao;
+import com.oesia.eventmanager.device.Device;
+import com.oesia.eventmanager.event.DeviceCommandEvent;
 import com.oesia.eventmanager.event.IEvent;
 
 public class StringEventParser
 {
-    private static Map<String, ICommand> stringToCommandMap = new HashMap<String, ICommand>() {
-        {
-            put("ON", new OnCommand());
-            put("OFF", new OffCommand());
-            put("ALARM", new AlertCommand());
-        }
-    };
-
-    private String entryString;
+	
+	private static final String COMMAND_DEVICE_EVENT_PATTERN = "(ON|OFF|ALARM)(\\s){1}(\\w)+";
+	
+	private DeviceDao deviceDao = DaoFactory.getDeviceDao("memory");
+	
+    private String eventString;
 
     public StringEventParser(String entry)
     {
-        this.entryString = entry;
-    }
-    
-    
-
-    public String getEntryDeviceName()
-    {
-        return entryString.split(" ")[1];
-    }
-
-    public ICommand getEntryCommand()
-    {
-        String commmandString = entryString.split(" ")[0];
-        return stringToCommandMap.get(commmandString);
+        this.eventString = entry;
     }
     
     public IEvent toEvent()
     {
-        return null;
+    	if (isACommandDeviceEventString())
+    	{
+    		StringCommandDeviceEventParser commandDeviceParser = new StringCommandDeviceEventParser(eventString);
+    		Device device = deviceDao.getDeviceByName(commandDeviceParser.getEntryDeviceName());
+    		return new DeviceCommandEvent(device, commandDeviceParser.getEntryCommand());
+    	}
+    	return null;
+    }
+    
+    private boolean isACommandDeviceEventString()
+    {
+    	return eventString.matches(COMMAND_DEVICE_EVENT_PATTERN);
     }
 }

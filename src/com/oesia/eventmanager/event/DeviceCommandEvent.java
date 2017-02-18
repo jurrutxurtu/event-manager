@@ -5,7 +5,6 @@ import com.oesia.eventmanager.device.Device;
 
 public class DeviceCommandEvent implements IEvent
 {
-    
     private Device device;
     private ICommand command;
 
